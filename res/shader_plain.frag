@@ -1,6 +1,5 @@
 #version 330 core
 
-in vec3 norm_pass;
 in float light_pass;
 
 out vec4 color_out;

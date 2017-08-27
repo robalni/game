@@ -168,19 +168,31 @@ static void set_vert(float* f, char* str,
         f[0] = verts[i*3];
         f[1] = verts[i*3+1];
         f[2] = verts[i*3+2];
+    } else {
+        f[0] = f[1] = f[2] = 0;
     }
     str = after_char(str, '/');
-    i = atoi(str) - 1;
-    if (i < n_texs) {
-        f[3] = texs[i*2];
-        f[4] = texs[i*2+1];
-    }
-    str = after_char(str, '/');
-    i = atoi(str) - 1;
-    if (i < n_norms) {
-        f[5] = norms[i*3];
-        f[6] = norms[i*3+1];
-        f[7] = norms[i*3+2];
+    if (str != NULL) {
+        i = atoi(str) - 1;
+        if (i < n_texs) {
+            f[3] = texs[i*2];
+            f[4] = texs[i*2+1];
+        } else {
+            f[3] = f[4] = 0;
+        }
+        str = after_char(str, '/');
+        if (str != NULL) {
+            i = atoi(str) - 1;
+            if (i < n_norms) {
+                f[5] = norms[i*3];
+                f[6] = norms[i*3+1];
+                f[7] = norms[i*3+2];
+            }
+        } else {
+            f[5] = f[6] = f[7] = 0;
+        }
+    } else {
+        f[3] = f[4] = f[5] = f[6] = f[7] = 0;
     }
 }
 static bool read_obj_file(const char* name,
@@ -232,10 +244,19 @@ static bool read_obj_file(const char* name,
             } else if (strcmp(cmd, "f") == 0) {
                 *faces = realloc(*faces, (*n_faces+1)*24 * sizeof (float));
                 float* f = &(*faces)[*n_faces * 24];
-                memset(f, 0, 24 * sizeof (float));
                 set_vert(f, arg1, verts, n_verts, texs, n_texs, norms, n_norms);
                 set_vert(f+8, arg2, verts, n_verts, texs, n_texs, norms, n_norms);
                 set_vert(f+16, arg3, verts, n_verts, texs, n_texs, norms, n_norms);
+                if (f[5] == 0 && f[6] == 0 && f[7] == 0) {
+                    Vec3 v1 = vec3(f[0], f[1], f[2]);
+                    Vec3 v2 = vec3(f[8], f[9], f[10]);
+                    Vec3 v3 = vec3(f[16], f[17], f[18]);
+                    Vec3 norm = vec_cross(vec_to(v1, v2), vec_to(v1, v3));
+                    norm = vec_norm(norm);
+                    f[5] = f[13] = f[21] = norm.x;
+                    f[6] = f[14] = f[22] = norm.y;
+                    f[7] = f[15] = f[23] = norm.z;
+                }
                 (*n_faces)++;
             }
         }

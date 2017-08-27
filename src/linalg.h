@@ -58,6 +58,12 @@ static inline float vec_dot(Vec3 v1, Vec3 v2) {
     return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
 }
 
+static inline Vec3 vec_cross(Vec3 v1, Vec3 v2) {
+    return vec3(v1.y*v2.z - v1.z-v2.y,
+                v1.z*v2.x - v1.x*v2.z,
+                v1.x*v2.y - v1.y*v2.x);
+}
+
 static inline Vec3 vec_scale(Vec3 v, float s) {
     return vec3(v.x*s, v.y*s, v.z*s);
 }
@@ -84,6 +90,10 @@ static inline Vec3 vec_norm(Vec3 v) {
 
 static inline Vec3 vec_neg(Vec3 v) {
     return vec_scale(v, -1);
+}
+
+static inline Vec3 vec_to(Vec3 from, Vec3 to) {
+    return vec3(to.x-from.x, to.y-from.y, to.z-from.z);
 }
 
 static inline Vec3 vec_to_circular(Vec3 v) {

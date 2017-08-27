@@ -1,6 +1,5 @@
 #version 330 core
 
-in vec3 norm_pass;
 in float light_pass;
 in vec2 tex_pass;
 
