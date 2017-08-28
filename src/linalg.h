@@ -4,54 +4,48 @@
 #include <math.h>
 #include <float.h>
 
-typedef struct {
-    union {
-        float v[3];
-        struct {
-            float x, y, z;
-        };
+typedef union {
+    float v[3];
+    struct {
+        float x, y, z;
     };
 } Vec3;
 
-typedef struct {
-    union {
-        float v[4];
-        struct {
-            float w, x, y, z;
-        };
+typedef union {
+    float v[4];
+    struct {
+        float w, x, y, z;
     };
 } Quat;
 
-typedef struct {
-    union {
-        float v[4*4];
-        struct {
-            float xx, xy, xz, xw;
-            float yx, yy, yz, yw;
-            float zx, zy, zz, zw;
-            float wx, wy, wz, ww;
-        };
+typedef union {
+    float v[4*4];
+    struct {
+        float xx, xy, xz, xw;
+        float yx, yy, yz, yw;
+        float zx, zy, zz, zw;
+        float wx, wy, wz, ww;
     };
 } Mat4;
 
 static inline Vec3 vec3(float x, float y, float z) {
-    return (Vec3){{{x, y, z}}};
+    return (Vec3){{x, y, z}};
 }
 
 static inline Quat quat(float w, float x, float y, float z) {
-    return (Quat){{{w, x, y, z}}};
+    return (Quat){{w, x, y, z}};
 }
 
 static inline Mat4 mat4(float xx, float xy, float xz, float xw,
                         float yx, float yy, float yz, float yw,
                         float zx, float zy, float zz, float zw,
                         float wx, float wy, float wz, float ww) {
-    return (Mat4){{{
+    return (Mat4){{
         xx, xy, xz, xw,
         yx, yy, yz, yw,
         zx, zy, zz, zw,
         wx, wy, wz, ww,
-    }}};
+    }};
 }
 
 static inline float vec_dot(Vec3 v1, Vec3 v2) {
